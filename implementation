@@ -1,0 +1,65 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+
+/*
+那么实际上，这个算法的核心在于，把短的那个链的不够长的部分，用0来表示。
+比我分段操作的想法更胜一筹
+方法步骤：
+1、用x和y表示l1,l2当前节点的值
+2、初始化carry=0，记sum=x+y+carry;
+3、将sum%10插入；
+4、更新sum为sum/10;
+5、继续循环（l1=l1->next;
+            l2=l2->next）
+有几个要注意的细节：
+1、遍历完两条链，依然产生进位，要额外加上一个node
+2、每次插入的大小是sum%10；
+3、采用头节点的方式，最后应当返回dummyNode->next；
+4、在改变循环条件时，必须要注意11,l2是否已经为null：
+    if(l1)l1=l1->next;
+    if(l2)l2=l2->next;
+*/
+
+
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+     
+        ListNode *dummyNode=new ListNode(0);
+        ListNode *ptr=dummyNode;
+        
+        //扫描l1,l2，只要有一个不为null，扫描就继续下去，为null的地方记为0；
+        int carry=0;
+        
+        while(l1||l2){
+            //用x,y分别记录l1，l2的当前值，若其中一个已经为空，则记为0；
+            int x=l1?l1->val:0;
+            int y=l2?l2->val:0;
+            //求和
+            int sum=x+y+carry;
+            //将节点插入l3;
+            ptr->next=new ListNode(sum%10);
+            ptr=ptr->next;
+            //记录carry
+            carry=sum/10;
+            if(l1)l1=l1->next;
+            if(l2)l2=l2->next;
+        }
+        
+        if(carry>0){
+            ptr->next=new ListNode(carry);
+            ptr=ptr->next;
+        }
+        
+        
+        
+        
+        return dummyNode->next;
+    }
+};
